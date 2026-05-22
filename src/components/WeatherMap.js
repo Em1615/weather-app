@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { cities } from '../constants/cities';
 import { fetchWeather } from '../services/weatherService';
 import { getWeatherIcon } from '../utils/weatherIcons';
 
-const WeatherMap = () => {
+const WeatherMap = ({ layers }) => {
   const [weatherData, setWeatherData] = useState({});
 
   useEffect(() => {
@@ -24,6 +24,26 @@ const WeatherMap = () => {
     loadWeather();
   }, []);
 
+  const getDescription = (cityId, weather) => {
+    if (!weather) return 'Загрузка...';
+    
+    const parts = [];
+    const temp = weather.main?.temp ? Math.round(weather.main.temp) : null;
+    const weatherCode = weather.weather?.[0]?.id;
+    const icon = weatherCode ? getWeatherIcon(weatherCode) : '';
+    const windSpeed = weather.wind?.speed;
+    const pressure = weather.main?.pressure;
+    
+    if (layers.temperature && temp !== null) parts.push(`${icon} ${temp}°C`);
+    if (layers.precipitation && weather.weather?.[0]?.description) {
+      parts.push(weather.weather[0].description);
+    }
+    if (layers.wind && windSpeed) parts.push(`💨 ${windSpeed} м/с`);
+    if (layers.pressure && pressure) parts.push(`📊 ${pressure} гПа`);
+    
+    return parts.join(' | ') || city.name;
+  };
+
   return (
     <View style={styles.container}>
       <MapView
@@ -37,16 +57,14 @@ const WeatherMap = () => {
       >
         {cities.map(city => {
           const weather = weatherData[city.id];
-          const temp = weather?.main?.temp ? Math.round(weather.main.temp) : null;
-          const weatherCode = weather?.weather?.[0]?.id;
-          const icon = weatherCode ? getWeatherIcon(weatherCode) : '⌛';
+          const description = getDescription(city.id, weather);
           
           return (
             <Marker
               key={city.id}
               coordinate={{ latitude: city.lat, longitude: city.lon }}
               title={city.name}
-              description={temp !== null ? `${icon} ${temp}°C` : 'Загрузка...'}
+              description={description}
             />
           );
         })}
