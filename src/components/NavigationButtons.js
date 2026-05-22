@@ -5,10 +5,10 @@ const NavigationButtons = ({ onCenter, onFitAll }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={onCenter}>
-        <Text style={styles.buttonText}>🎯 Вернуться к центру</Text>
+        <Text style={styles.buttonText}>🎯 Центр</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={onFitAll}>
-        <Text style={styles.buttonText}>📍 Показать все маркеры</Text>
+        <Text style={styles.buttonText}>📍 Все</Text>
       </TouchableOpacity>
     </View>
   );
@@ -17,15 +17,15 @@ const NavigationButtons = ({ onCenter, onFitAll }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 60,
-    right: 10,
+    top: 100,
+    right: 15,
     alignItems: 'flex-end',
   },
   button: {
-    backgroundColor: 'rgba(33, 150, 243, 0.9)',
-    paddingHorizontal: 12,
+    backgroundColor: 'rgba(33, 150, 243, 0.95)',
+    paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 25,
     marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
