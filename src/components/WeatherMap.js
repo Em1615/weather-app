@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { cities } from '../constants/cities';
 
 const WeatherMap = () => {
   return (
@@ -10,15 +11,17 @@ const WeatherMap = () => {
         initialRegion={{
           latitude: 55.751244,
           longitude: 37.618423,
-          latitudeDelta: 10,
-          longitudeDelta: 10,
+          latitudeDelta: 15,
+          longitudeDelta: 15,
         }}
       >
-        <Marker
-          coordinate={{ latitude: 55.751244, longitude: 37.618423 }}
-          title="Москва"
-          description="Столица России"
-        />
+        {cities.map(city => (
+          <Marker
+            key={city.id}
+            coordinate={{ latitude: city.lat, longitude: city.lon }}
+            title={city.name}
+          />
+        ))}
       </MapView>
     </View>
   );
