@@ -1,12 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { cities } from '../constants/cities';
 import { fetchWeather } from '../services/weatherService';
 import { getWeatherIcon } from '../utils/weatherIcons';
 
-const WeatherMap = ({ layers }) => {
+const WeatherMap = React.forwardRef(({ layers }, ref) => {
   const [weatherData, setWeatherData] = useState({});
+  const mapRef = useRef(null);
+
+  // Передаём mapRef во внешний ref
+  React.useImperativeHandle(ref, () => ({
+    centerMap: () => {
+      mapRef.current?.animateToRegion({
+        latitude: 55.751244,
+        longitude: 37.618423,
+        latitudeDelta: 10,
+        longitudeDelta: 10,
+      });
+    },
+    fitAllMarkers: () => {
+      const coordinates = cities.map(city => ({
+        latitude: city.lat,
+        longitude: city.lon,
+      }));
+      mapRef.current?.fitToCoordinates(coordinates, {
+        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+      });
+    },
+  }));
 
   useEffect(() => {
     const loadWeather = async () => {
@@ -47,6 +69,7 @@ const WeatherMap = ({ layers }) => {
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         style={styles.map}
         initialRegion={{
           latitude: 55.751244,
@@ -71,7 +94,7 @@ const WeatherMap = ({ layers }) => {
       </MapView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
